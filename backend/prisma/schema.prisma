@@ -1,0 +1,119 @@
+// This is your Prisma schema file for AskMyPDF backend (PostgreSQL)
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  workspaces    Workspace[]
+  documents     Document[]
+  chatSessions  ChatSession[]
+  annotations   Annotation[]
+
+  @@map("users")
+}
+
+model Workspace {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents Document[]
+
+  @@map("workspaces")
+}
+
+model Document {
+  id          String   @id
+  userId      String?  @map("user_id")
+  workspaceId String?  @map("workspace_id")
+  name        String
+  sizeBytes   Int      @map("size_bytes")
+  pageCount   Int      @map("page_count")
+  wordCount   Int      @map("word_count")
+  category    String   @default("custom")
+  summary     String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  pages       DocumentPage[]
+  chatSessions ChatSession[]
+  annotations Annotation[]
+
+  @@map("documents")
+}
+
+model DocumentPage {
+  id         String  @id @default(uuid())
+  documentId String  @map("document_id")
+  pageNumber Int     @map("page_number")
+  title      String?
+  content    String
+  keyTopics  String? @map("key_topics") // JSON array as string
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("document_pages")
+}
+
+model ChatSession {
+  id         String   @id @default(uuid())
+  documentId String   @map("document_id")
+  userId     String?  @map("user_id")
+  title      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  document  Document      @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user      User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  sessionId String   @map("session_id")
+  role      String   // 'user' | 'assistant' | 'system'
+  content   String
+  citations String?  // JSON array as string
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+model Annotation {
+  id         String   @id @default(uuid())
+  documentId String   @map("document_id")
+  userId     String?  @map("user_id")
+  pageNumber Int      @map("page_number")
+  type       String   // 'highlight' | 'note' | 'citation'
+  rect       String   // JSON: { x, y, width, height }
+  text       String?
+  note       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  document  Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("annotations")
+}

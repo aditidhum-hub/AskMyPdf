@@ -1,0 +1,21 @@
+services:
+  askmypdf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: askmypdf-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ASKMYPDF_JWT_SECRET=${ASKMYPDF_JWT_SECRET:-enterprise-jwt-secret-askmypdf}
+      - ASKMYPDF_DB_PATH=/app/data/askmypdf.db
+    volumes:
+      - askmypdf_data:/app/data
+
+volumes:
+  askmypdf_data:
+    driver: local

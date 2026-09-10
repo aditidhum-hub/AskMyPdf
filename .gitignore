@@ -6,3 +6,21 @@ coverage/
 *.log
 .env*
 !.env.example
+!frontend/.env.example
+!backend/.env.example
+
+# SQLite database runtime files
+*.db
+*.db-shm
+*.db-wal
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Backend build artifacts
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/prisma/migrations/
