@@ -1,7 +1,9 @@
 node_modules
-dist
+**/node_modules
 .git
 .agents
 .gemini
 *.log
 askmypdf.db*
+**/askmypdf.db*
+.env

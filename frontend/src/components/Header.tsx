@@ -69,9 +69,9 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="h-16 border-b border-slate-200 bg-white/95 backdrop-blur px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none">
+    <header className="h-16 border-b border-slate-200 bg-white/95 backdrop-blur px-3 sm:px-5 flex items-center justify-between gap-3 z-30 shrink-0 select-none">
       {/* Brand & Document Selector */}
-      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 max-w-xl">
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-sky-500 flex items-center justify-center shadow-xs text-white font-bold">
@@ -92,31 +92,31 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="h-6 w-px bg-slate-200 hidden sm:block shrink-0" />
 
         {/* Document Selector Dropdown Trigger */}
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative min-w-0 flex-1 sm:flex-initial max-w-[260px] sm:max-w-xs md:max-w-sm" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setDocDropdownOpen(!docDropdownOpen)}
             aria-expanded={docDropdownOpen}
             aria-haspopup="listbox"
             aria-label={`Current document: ${currentDoc.name}. Click to switch document.`}
-            className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 min-h-[42px] rounded-xl border border-slate-200 hover:border-indigo-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-left max-w-[170px] xs:max-w-[210px] sm:max-w-xs focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20"
+            className="flex items-center gap-2.5 px-3 py-1.5 min-h-[42px] rounded-xl border border-slate-200 hover:border-indigo-300 bg-slate-50/80 hover:bg-slate-100/90 transition-all text-left w-full min-w-0 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 shadow-2xs group cursor-pointer"
           >
-            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-100 transition-colors">
               <FileText className="w-4 h-4" />
             </div>
-            <div className="truncate min-w-0">
+            <div className="truncate min-w-0 flex-1">
               <div className="text-xs font-semibold text-slate-800 truncate leading-tight">
                 {currentDoc.name}
               </div>
-              <div className="text-[10px] text-slate-500 flex items-center gap-1 leading-tight mt-0.5">
-                <span>{currentDoc.pageCount} pgs</span>
-                <span>•</span>
-                <span className="truncate">{currentDoc.category}</span>
+              <div className="text-[10px] text-slate-500 flex items-center gap-1.5 leading-tight mt-0.5">
+                <span className="font-medium text-slate-600 shrink-0">{currentDoc.pageCount} pgs</span>
+                <span className="text-slate-300 shrink-0">•</span>
+                <span className="truncate text-slate-500 capitalize">{currentDoc.category}</span>
               </div>
             </div>
             <ChevronDown 
-              className={`w-3.5 h-3.5 text-slate-400 shrink-0 ml-auto transition-transform duration-200 ${
-                docDropdownOpen ? 'rotate-180 text-indigo-600' : ''
+              className={`w-4 h-4 text-slate-400 shrink-0 ml-1 transition-transform duration-200 ${
+                docDropdownOpen ? 'rotate-180 text-indigo-600' : 'group-hover:text-slate-600'
               }`} 
             />
           </button>
@@ -204,11 +204,15 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Right Controls: Status, Layout Modes, Upload & Export */}
-      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-        {/* Model status badge */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
-          <Cpu className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-          <span>Gemini 3.8 Flash Active</span>
+      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2.5 shrink-0">
+        {/* Model status badge (visible on large widescreen displays without crowding) */}
+        <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-medium shrink-0 shadow-2xs">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <Cpu className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Gemini 3.8 Flash</span>
         </div>
 
         {/* Layout Mode Switcher (Desktop & Tablets) */}
