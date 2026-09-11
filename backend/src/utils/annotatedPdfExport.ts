@@ -191,15 +191,17 @@ export async function downloadAnnotatedPdf(
   options: GenerateAnnotatedPdfOptions = {}
 ): Promise<void> {
   const pdfBytes = await generateAnnotatedPdf(doc, options);
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${doc.name.replace(/\.[^/.]+$/, '')}-Annotated.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${doc.name.replace(/\.[^/.]+$/, '')}-Annotated.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 }
 
 /**
